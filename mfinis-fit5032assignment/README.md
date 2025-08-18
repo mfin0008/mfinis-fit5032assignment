@@ -1,4 +1,4 @@
-# mfinis-library
+# mfinis-fit5032assignment
 
 This template should help get you started developing with Vue 3 in Vite.
 
