@@ -1,0 +1,13 @@
+:root {
+  --color-primary: #8E3823;
+  --color-secondary: #F6D49F;
+  --color-accent: #5B7431;
+  --color-neutral: #3E2723;
+  --color-raised: #C2A477;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow-y: auto;
+}
