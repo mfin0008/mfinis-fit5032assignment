@@ -13,7 +13,7 @@ const onInput = (e) => {
 
 <template>
   <div class="container">
-    <div class="row content-container pt-5 pb-5">
+    <div class="row pt-5 pb-5">
       <div class="col-1 d-xxl-none"></div>
       <div class="col-10 col-xxl-4 content-box mb-3">
         <md-slider></md-slider>
@@ -76,10 +76,6 @@ md-slider {
   display: block;
   margin-inline: auto;
   width: 60%
-}
-
-.content-container {
-  height: 100%;
 }
 
 .content-box {

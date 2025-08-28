@@ -4,7 +4,6 @@ import '../assets/main.css'
 </script>
 
 <template>
-<header>
   <div>
     <nav class="navbar navbar-dark navbar-expand-xxl" style="background: var(--color-primary);">
       <div class="container-fluid">
@@ -36,7 +35,6 @@ import '../assets/main.css'
       </div>
     </nav>
   </div>
-</header>
 </template>
 
 <style>
@@ -67,7 +65,6 @@ nav a, li {
 
 nav a.router-link-exact-active.nav-link {
   color: var(--color-neutral);
-  /*TODO Make rounded button*/
 }
 
 .brand-long { display: none; }
