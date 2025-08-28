@@ -6,15 +6,25 @@ import SiteFooter from './components/SiteFooter.vue';
 </script>
 
 <template>
-  <header class="sticky-top"><SiteHeader /></header>
-  <div class="site-content">
-    <RouterView style="background-color: var(--color-secondary);"/>
+  <div class="page">
+    <header class="sticky-top"><SiteHeader /></header>
+    <main class="site-content">
+      <RouterView style="background-color: var(--color-secondary);"/>
+    </main>
+    <footer class="sticky-bottom"><SiteFooter /></footer>
   </div>
-  <footer class="sticky-bottom"><SiteFooter /></footer>
 </template>
 
 <style scoped>
-.site-content {
-  background-color: var(--color-secondary);;
+.page {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  background: var(--color-secondary);
 }
+@supports (height: 100dvh) {
+  .page { min-height: 100dvh; }
+}
+
+.site-content { background: var(--color-secondary); }
 </style>

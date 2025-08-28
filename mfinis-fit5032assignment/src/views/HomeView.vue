@@ -3,6 +3,7 @@ import '@material/web/textfield/filled-text-field.js';
 </script>
 
 <template>
-<div>Home</div>
-<md-filled-text-field label="Password" type="password" :value="password"/>
+<div class="container text-center">
+  <h1>Go to Login</h1>
+</div>
 </template>
