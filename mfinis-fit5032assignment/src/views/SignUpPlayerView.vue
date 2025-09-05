@@ -6,6 +6,8 @@ import { ref } from 'vue';
 import PlayerCard from '@/components/PlayerCard.vue';
 import SignUpPlayerForm from '@/components/SignUpPlayerForm.vue';
 import PlayerStatSliderForm from '@/components/PlayerStatSliderForm.vue';
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { useRouter } from 'vue-router';
 
 const MAX_STAT_TOTAL = 600;
 const isAtStatTotal = ref(false);
@@ -42,9 +44,16 @@ const errors = ref({
   position: '',
 });
 
+const router = useRouter();
+
 const submitForm = (success) => {
   if (success) {
-    alert('success');
+    createUserWithEmailAndPassword(getAuth(), formData.value.email, formData.value.password)
+      .then(
+        () => router.push('/')
+      ).catch(
+        err => console.error(err.code) // todo handle for duplicate email error
+      )
   }
 }
 
@@ -124,13 +133,3 @@ const resetForm = () => {
     </div>
   </div>
 </template>
-
-<style scoped>
-.content-box {
-  background-color: var(--color-raised);
-  color: var(--color-neutral);
-  font-size: x-large;
-  text-align: center;
-  align-items: center;
-}
-</style>
