@@ -28,7 +28,7 @@
 
 <style scoped>
 img {
-  height: 8vh;
+  height: var(--footer-height);
   width: auto;
   margin: 0.5em 0.5em;
 }

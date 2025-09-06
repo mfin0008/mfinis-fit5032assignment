@@ -1,7 +1,6 @@
 <script setup>
 import '@material/web/all.js';
 import '@material/web/slider/slider.js';
-import '../assets/main.css';
 import { ref } from 'vue';
 import PlayerCard from '@/components/PlayerCard.vue';
 import SignUpPlayerForm from '@/components/SignUpPlayerForm.vue';
@@ -27,7 +26,7 @@ const playerStats = ref({
 const formData = ref({
   email: '',
   password: '',
-  passwordConfirmation: '',
+  confirmPassword: '',
   firstName: '',
   lastName: '',
   nickname: '',
@@ -37,7 +36,7 @@ const formData = ref({
 const errors = ref({
   email: '',
   password: '',
-  passwordConfirmation: '',
+  confirmPassword: '',
   firstName: '',
   lastName: '',
   nickname: '',
@@ -47,6 +46,7 @@ const errors = ref({
 const router = useRouter();
 
 const submitForm = (success) => {
+  console.log(errors);
   if (success) {
     createUserWithEmailAndPassword(getAuth(), formData.value.email, formData.value.password)
       .then(

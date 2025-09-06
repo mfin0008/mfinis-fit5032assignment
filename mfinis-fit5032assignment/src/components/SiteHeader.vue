@@ -1,6 +1,5 @@
 <script setup>
 import { RouterLink } from 'vue-router'
-import '../assets/main.css'
 </script>
 
 <template>
@@ -24,7 +23,7 @@ import '../assets/main.css'
 
         <div id="mainNav" class="collapse navbar-collapse">
           <ul class="navbar-nav ms-auto align-items-center gap-3">
-            <li class="nav-item"><RouterLink to="/sign-up-player" class="nav-link">LOGIN</RouterLink></li>
+            <li class="nav-item"><RouterLink to="/login" class="nav-link">LOGIN</RouterLink></li>
             <li class="nav-item"><RouterLink to="/team" class="nav-link">TEAM</RouterLink></li>
             <li class="nav-item"><RouterLink to="/fixture" class="nav-link">FIXTURE</RouterLink></li>
             <li class="nav-item"><RouterLink to="/standings" class="nav-link">STANDINGS</RouterLink></li>

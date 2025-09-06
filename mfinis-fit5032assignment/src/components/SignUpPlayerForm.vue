@@ -1,4 +1,7 @@
 <script setup>
+import '../assets/main.css';
+import { validateEmail, validatePassword, validateConfirmPassword, validateFirstName, validateLastName, validateNickname, validatePosition } from '@/utils/validationHelpers';
+
 const formModel = defineModel('formData');
 const errorsModel = defineModel('errors');
 
@@ -8,149 +11,17 @@ const handleResetClick = () => {
 }
 const handleSubmitClick = () => {
   const validations = [
-    validateEmail(true),
-    validatePassword(true),
-    validateConfirmPassword(true),
-    validateFirstName(true),
-    validateLastName(true),
-    validateNickname(true),
-    validatePosition(),
+    validateEmail(formModel.value.email, true, errorsModel.value),
+    validatePassword(formModel.value.password, true, errorsModel.value),
+    validateConfirmPassword(formModel.value.confirmPassword, formModel.value.password, true, errorsModel.value),
+    validateFirstName(formModel.value.firstName, true, errorsModel.value),
+    validateLastName(formModel.value.lastName, true, errorsModel.value),
+    validateNickname(formModel.value.nickname, true, errorsModel.value),
+    validatePosition(formModel.value.position, errorsModel.value),
   ];
   emits('submitForm', validations.every(Boolean));
 }
 
-const getEmptyErrorMessage = (fieldName) => {
-return `Please provide a ${fieldName}`;
-}
-
-const validateEmail = (blur) => {
-  const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  const email = formModel.value.email;
-
-  if (!blur) {
-    errorsModel.value.email = null;
-    return true;
-  }
-
-  if (!email || !regex.test(email)) {
-    errorsModel.value.email = getEmptyErrorMessage('valid email address');
-    return false;
-  }
-
-  return true;
-}
-
-const validatePassword = (blur) => {
-  const password = formModel.value.password;
-  const minLength = 8;
-  const hasUppercase = /[A-Z]/.test(password);
-  const hasLowercase = /[a-z]/.test(password);
-  const hasNumber = /\d/.test(password);
-  const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-
-  if (!blur) {
-    errorsModel.value.password = null;
-    return true;
-  }
-
-  if (password.length < minLength) {
-    errorsModel.value.password = `Password must be at least ${minLength} characters long.`;
-    return false;
-  } else if (!hasUppercase) {
-    errorsModel.value.password = 'Password must contain at least one uppercase letter.';
-    return false;
-  } else if (!hasLowercase) {
-    errorsModel.value.password = 'Password must contain at least one lowercase letter.';
-    return false;
-  } else if (!hasNumber) {
-    errorsModel.value.password = 'Password must contain at least one number.';
-    return false;
-  } else if (!hasSpecialChar) {
-    errorsModel.value.password = 'Password must contain at least one special character.';
-    return false;
-  } else {
-    errorsModel.value.password = null;
-    return true;
-  }
-}
-
-const validateConfirmPassword = (blur) => {
-  if (!blur) {
-    errorsModel.value.confirmPassword = null;
-    return true;
-  }
-  if (formModel.value.password !== formModel.value.confirmPassword) {
-    errorsModel.value.confirmPassword = 'Passwords do not match.';
-    return false;
-  } else {
-    errorsModel.value.confirmPassword = null;
-    return true;
-  }
-}
-
-const MAX_NAME_LENGTH = 10;
-const validateFirstName = (blur) => {
-  const firstName = formModel.value.firstName;
-  if (!blur) {
-    errorsModel.value.firstName = null;
-    return true;
-  }
-
-  if (!firstName) {
-    errorsModel.value.firstName = getEmptyErrorMessage('first name');
-    return false;
-  }
-  if (firstName.length > MAX_NAME_LENGTH) {
-    errorsModel.value.firstName = `First name cannot be more than ${MAX_NAME_LENGTH} characters.`;
-    return false;
-  }
-
-  return true;
-}
-
-const validateLastName = (blur) => {
-  const lastName = formModel.value.lastName;
-  if (!blur) {
-    errorsModel.value.lastName = null;
-    return true;
-  }
-
-  if (!lastName) {
-    errorsModel.value.lastName = getEmptyErrorMessage('last name');
-    return false;
-  }
-  if (lastName.length > MAX_NAME_LENGTH) {
-    errorsModel.value.lastName = `Last name cannot be more than ${MAX_NAME_LENGTH} characters.`;
-    return false;
-  }
-
-  return true;
-}
-
-const validateNickname = (blur) => {
-  const nickname = formModel.value.nickname;
-  if (!blur) {
-    errorsModel.value.nickname = null;
-    return true;
-  }
-
-  if (nickname.length > MAX_NAME_LENGTH) {
-    errorsModel.value.nickname = `Nickname cannot be more than ${MAX_NAME_LENGTH} characters.`;
-    return false;
-  }
-
-  return true;
-}
-
-const validatePosition = () => {
-  const position = formModel.value.position;
-  if (!position) {
-    errorsModel.value.position = getEmptyErrorMessage('preferred position');
-    return false;
-  }
-
-  return true;
-}
 </script>
 
 <template>
@@ -162,8 +33,8 @@ const validatePosition = () => {
       id="email"
       name="email"
       v-model="formModel.email"
-      @blur="validateEmail(true)"
-      @input="validateEmail(false)"
+      @blur="validateEmail(formModel.email, true, errorsModel)"
+      @input="validateEmail(formModel.email, false, errorsModel)"
     />
     <div class="error-text">{{ errors.email }}</div>
 
@@ -174,8 +45,8 @@ const validatePosition = () => {
       id="password"
       name="password"
       v-model="formModel.password"
-      @blur="validatePassword(true)"
-      @input="validatePassword(false)"
+      @blur="validatePassword(formModel.password, true, errorsModel)"
+      @input="validatePassword(formModel.password, false, errorsModel)"
     />
     <div class="error-text">{{ errors.password }}</div>
 
@@ -186,8 +57,8 @@ const validatePosition = () => {
       id="confirm-password"
       name="confirm-password"
       v-model="formModel.confirmPassword"
-      @blur="validateConfirmPassword(true)"
-      @input="validateConfirmPassword(false)"
+      @blur="validateConfirmPassword(formModel.confirmPassword, formModel.password, true, errorsModel)"
+      @input="validateConfirmPassword(formModel.confirmPassword, formModel.password, false, errorsModel)"
     />
     <div class="error-text">{{ errors.confirmPassword }}</div>
 
@@ -198,8 +69,8 @@ const validatePosition = () => {
       id="first-name"
       name="first-name"
       v-model="formModel.firstName"
-      @blur="validateFirstName(true)"
-      @input="validateFirstName(false)"
+      @blur="validateFirstName(formModel.firstName, true, errorsModel)"
+      @input="validateFirstName(formModel.firstName, false, errorsModel)"
     />
     <div class="error-text">{{ errors.firstName }}</div>
 
@@ -210,8 +81,8 @@ const validatePosition = () => {
       id="last-name"
       name="last-name"
       v-model="formModel.lastName"
-      @blur="validateLastName(true)"
-      @input="validateLastName(false)"
+      @blur="validateLastName(formModel.lastName, true, errorsModel)"
+      @input="validateLastName(formModel.lastName, false, errorsModel)"
     />
     <div class="error-text">{{ errors.lastName }}</div>
 
@@ -222,8 +93,8 @@ const validatePosition = () => {
       id="nickname"
       name="nickname"
       v-model="formModel.nickname"
-      @blur="validateNickname(true)"
-      @input="validateNickname(false)"
+      @blur="validateNickname(formModel.nickname, true, errorsModel)"
+      @input="validateNickname(formModel.nickname, false, errorsModel)"
     />
     <div class="error-text">{{ errors.nickname }}</div>
 
@@ -233,7 +104,7 @@ const validatePosition = () => {
       id="position"
       name="position"
       v-model="formModel.position"
-      @change="validatePosition"
+      @change="validatePosition(formModel.position, errorsModel)"
     >
       <option value="forward">Forward</option>
       <option value="midfield">Midfielder</option>
@@ -251,55 +122,4 @@ const validatePosition = () => {
 </template>
 
 <style>
-label {
-  font-size: large;
-  margin-top: 1em;
-}
-
-#signup{
-  text-align: left;
-}
-.error-text, .required-astrsk {
-  color: var(--color-primary);
-}
-#signup .error-text {
-  font-size: medium;
-  text-align: center;
-}
-
-.form-control,
-.form-control:focus,
-.form-select,
-.form-select:focus {
-  background-color: var(--color-secondary);
-  color: var(--color-neutral);
-  border-color: var(--color-neutral);
-}
-
-button {
-  border: none;
-  margin: 0 1em;
-  font-size: large;
-  color: var(--color-secondary);
-  --bs-btn-active-bg: var(--color-secondary);
-  --bs-btn-active-color: var(--color-neutral);
-}
-.btn-primary {
-  border: none;
-  background-color: var(--color-accent);
-  color: var(--color-secondary);
-  --bs-btn-hover-bg: var(--color-accent);
-  --bs-btn-hover-color: var(--color-neutral);
-  --bs-btn-active-bg: var(--color-secondary);
-  --bs-btn-active-color: var(--color-neutral);
-}
-.btn-secondary {
-  border: none;
-  background-color: var(--color-primary);
-  color: var(--color-secondary);
-  --bs-btn-hover-bg: var(--color-primary);
-  --bs-btn-hover-color: var(--color-neutral);
-  --bs-btn-active-bg: var(--color-secondary);
-  --bs-btn-active-color: var(--color-neutral);
-}
 </style>
