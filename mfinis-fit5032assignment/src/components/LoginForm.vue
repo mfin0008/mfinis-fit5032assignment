@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import { validateRequiredField } from '../utils/validationHelpers';
+import { validateEmail, validateRequiredField } from '../utils/validationHelpers';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { useRouter } from 'vue-router';
 
@@ -16,6 +16,10 @@ const errors = ref({
 
 const router = useRouter();
 
+const handleSignUpClick = () => {
+  router.push('/sign-up');
+}
+
 const handleSubmitClick = () => {
   const validations = [
     validateRequiredField(formData.value.email, 'email', 'Email', errors.value, true),
@@ -25,9 +29,12 @@ const handleSubmitClick = () => {
 
   signInWithEmailAndPassword(getAuth(), formData.value.email, formData.value.password)
     .then(
-      () => router.push('/').then(()=>console.log(getAuth().currentUser))
+      () => router.push('/')
     ).catch(
-      () => errors.value.credentials = 'Invalid login credentials'
+      () => {
+        errors.value.credentials = 'Invalid email address and/or password';
+        formData.value.password = '';
+      }
     );
 }
 </script>
@@ -46,9 +53,9 @@ const handleSubmitClick = () => {
           id="email"
           name="email"
           v-model="formData.email"
-          @blur="validateRequiredField(formData.email, 'email', 'Email', errors, true)"
+          @blur="validateEmail(formData.email, true, errors)"
           @input="() => {
-            validateRequiredField(formData.email, 'email', 'Email', errors, false);
+            validateEmail(formData.email, false, errors);
             errors.credentials='';
           }"
         />
@@ -74,7 +81,7 @@ const handleSubmitClick = () => {
           <button type="submit" class="btn btn-primary rounded-pill">Login</button>
         </div>
 
-        <p>New here? <RouterLink to="/sign-up" class="mb-4">Sign up instead!</RouterLink></p>
+        <p>New here? <button @click="handleSignUpClick" type="button" class="btn btn-primary rounded-pill">Sign up today!</button></p>
 
       </form>
     </div>

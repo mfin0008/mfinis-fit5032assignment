@@ -60,7 +60,7 @@ const positionMap = {
 </script>
 
 <template>
-  <svg class="overlay-svg" viewBox="0 0 600 900" preserveAspectRatio="xMidYMid meet">
+  <svg viewBox="0 0 600 900" preserveAspectRatio="xMidYMid meet">
     <image href="@/assets/player-card.png" x="0" y="0" width="600" height="900" />
     <image href="@/assets/Footy-9s-logo.png" x="300" y="250" width="200" height="200" />
     <text
@@ -99,6 +99,3 @@ const positionMap = {
     </text>
   </svg>
 </template>
-
-<style scoped>
-</style>

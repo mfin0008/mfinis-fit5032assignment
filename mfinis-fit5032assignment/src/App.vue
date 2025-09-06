@@ -8,7 +8,7 @@ import SiteFooter from './components/SiteFooter.vue';
   <div class="page">
     <header class="sticky-top vw-100"><SiteHeader /></header>
     <main class="site-content vw-100">
-      <RouterView style="background-color: var(--color-secondary);"/>
+      <RouterView />
     </main>
     <footer class="sticky-bottom vw-100"><SiteFooter /></footer>
   </div>
@@ -25,6 +25,4 @@ import SiteFooter from './components/SiteFooter.vue';
 @supports (height: 100dvh) {
   .page { min-height: 100dvh; }
 }
-
-.site-content { background: var(--color-secondary); }
 </style>

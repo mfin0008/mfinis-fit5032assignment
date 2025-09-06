@@ -46,7 +46,6 @@ const errors = ref({
 const router = useRouter();
 
 const submitForm = (success) => {
-  console.log(errors);
   if (success) {
     createUserWithEmailAndPassword(getAuth(), formData.value.email, formData.value.password)
       .then(

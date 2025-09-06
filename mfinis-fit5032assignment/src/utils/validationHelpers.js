@@ -70,7 +70,6 @@ export const validateConfirmPassword = (confirmPassword, password, blur, errors)
     errors.confirmPassword = null;
     return true;
   }
-  console.log(confirmPassword, password);
   if (password !== confirmPassword) {
     errors.confirmPassword = 'Passwords do not match.';
     return false;

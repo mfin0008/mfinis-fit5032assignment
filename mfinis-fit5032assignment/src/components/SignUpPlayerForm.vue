@@ -25,7 +25,7 @@ const handleSubmitClick = () => {
 </script>
 
 <template>
-  <form id="signup" class="d-flex flex-column flex-grow-1" @submit.prevent="handleSubmitClick">
+  <form id="signup-player" class="d-flex flex-column flex-grow-1" @submit.prevent="handleSubmitClick">
     <label for="email" class="form-label">Email<span class="required-astrsk">*</span></label>
     <input
       type="text"
@@ -36,7 +36,7 @@ const handleSubmitClick = () => {
       @blur="validateEmail(formModel.email, true, errorsModel)"
       @input="validateEmail(formModel.email, false, errorsModel)"
     />
-    <div class="error-text">{{ errors.email }}</div>
+    <div class="error-text">{{ errorsModel.email }}</div>
 
     <label for="password" class="form-label">Password<span class="required-astrsk">*</span></label>
     <input
@@ -48,7 +48,7 @@ const handleSubmitClick = () => {
       @blur="validatePassword(formModel.password, true, errorsModel)"
       @input="validatePassword(formModel.password, false, errorsModel)"
     />
-    <div class="error-text">{{ errors.password }}</div>
+    <div class="error-text">{{ errorsModel.password }}</div>
 
     <label for="confirm-password" class="form-label">Re-enter your password<span class="required-astrsk">*</span></label>
     <input
@@ -60,7 +60,7 @@ const handleSubmitClick = () => {
       @blur="validateConfirmPassword(formModel.confirmPassword, formModel.password, true, errorsModel)"
       @input="validateConfirmPassword(formModel.confirmPassword, formModel.password, false, errorsModel)"
     />
-    <div class="error-text">{{ errors.confirmPassword }}</div>
+    <div class="error-text">{{ errorsModel.confirmPassword }}</div>
 
     <label for="first-name" class="form-label">First name<span class="required-astrsk">*</span></label>
     <input
@@ -72,7 +72,7 @@ const handleSubmitClick = () => {
       @blur="validateFirstName(formModel.firstName, true, errorsModel)"
       @input="validateFirstName(formModel.firstName, false, errorsModel)"
     />
-    <div class="error-text">{{ errors.firstName }}</div>
+    <div class="error-text">{{ errorsModel.firstName }}</div>
 
     <label for="last-name" class="form-label">Last name<span class="required-astrsk">*</span></label>
     <input
@@ -84,7 +84,7 @@ const handleSubmitClick = () => {
       @blur="validateLastName(formModel.lastName, true, errorsModel)"
       @input="validateLastName(formModel.lastName, false, errorsModel)"
     />
-    <div class="error-text">{{ errors.lastName }}</div>
+    <div class="error-text">{{ errorsModel.lastName }}</div>
 
     <label for="nickname" class="form-label">Nickname</label>
     <input
@@ -96,7 +96,7 @@ const handleSubmitClick = () => {
       @blur="validateNickname(formModel.nickname, true, errorsModel)"
       @input="validateNickname(formModel.nickname, false, errorsModel)"
     />
-    <div class="error-text">{{ errors.nickname }}</div>
+    <div class="error-text">{{ errorsModel.nickname }}</div>
 
     <label for="position" class="form-label">Preferred position<span class="required-astrsk">*</span></label>
     <select
@@ -111,8 +111,8 @@ const handleSubmitClick = () => {
       <option value="defender">Defender</option>
       <option value="ruckman">Ruckman</option>
     </select>
-    <div class="error-text">{{ errors.position }}</div>
-    <div class="mt-auto d-flex justify-content-center gap-3 py-3">
+    <div class="error-text">{{ errorsModel.position }}</div>
+    <div class="mt-autojustify-content-center gap-3 py-3">
       <button type="submit" class="btn btn-primary rounded-pill">Sign Up</button>
       <button type="button" class="btn btn-secondary rounded-pill" @click="handleResetClick">
         Reset
@@ -120,6 +120,3 @@ const handleSubmitClick = () => {
     </div>
   </form>
 </template>
-
-<style>
-</style>
