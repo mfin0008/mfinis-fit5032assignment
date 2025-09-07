@@ -7,6 +7,7 @@ import SignUpPlayerForm from '@/components/SignUpPlayerForm.vue';
 import PlayerStatSliderForm from '@/components/PlayerStatSliderForm.vue';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { useRouter } from 'vue-router';
+import { Roles, setUser } from '@/firebase/collections/users';
 
 const MAX_STAT_TOTAL = 600;
 const isAtStatTotal = ref(false);
@@ -45,14 +46,37 @@ const errors = ref({
 
 const router = useRouter();
 
-const submitForm = (success) => {
-  if (success) {
-    createUserWithEmailAndPassword(getAuth(), formData.value.email, formData.value.password)
-      .then(
-        () => router.push('/')
-      ).catch(
-        err => console.error(err.code) // todo handle for duplicate email error
-      )
+const submitForm = async (success) => {
+  if (!success) {
+    return;
+  }
+  try {
+    const userId = (await createUserWithEmailAndPassword(getAuth(), formData.value.email, formData.value.password)).user.uid;
+    setUser(
+      userId,
+      {
+        email: formData.value.email,
+        firstName: formData.value.firstName,
+        lastName: formData.value.lastName,
+        nickname: formData.value.nickname,
+        playerData: {
+          nickname: formData.value.nickname,
+          position: formData.value.position,
+          kicking: playerStats.value.kicking,
+          handling: playerStats.value.handling,
+          goalKicking: playerStats.value.goalKicking,
+          marking: playerStats.value.marking,
+          pace: playerStats.value.pace,
+          defending: playerStats.value.defending,
+          strength: playerStats.value.strength,
+          tackling: playerStats.value.tackling,
+        }
+      },
+      [Roles.PLAYER]
+    );
+    await router.push('/');
+  } catch (err) {
+    console.error(err.code);
   }
 }
 

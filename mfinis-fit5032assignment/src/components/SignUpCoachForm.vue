@@ -4,6 +4,7 @@ import '../assets/main.css';
 import { validateEmail, validatePassword, validateConfirmPassword, validateFirstName, validateLastName } from '@/utils/validationHelpers';
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
 import { useRouter } from 'vue-router';
+import { Roles, setUser } from '@/firebase/collections/users';
 
 const formData = ref({
   email: '',
@@ -36,7 +37,7 @@ const handleResetClick = () => {
 
 const router = useRouter();
 
-const handleSubmitClick = () => {
+const handleSubmitClick = async () => {
   const validations = [
     validateEmail(formData.value.email, true, errors.value),
     validatePassword(formData.value.password, true, errors.value),
@@ -44,13 +45,24 @@ const handleSubmitClick = () => {
     validateFirstName(formData.value.firstName, true, errors.value),
     validateLastName(formData.value.lastName, true, errors.value),
   ];
-  if (validations.every(Boolean)) {
-    createUserWithEmailAndPassword(getAuth(), formData.value.email, formData.value.password)
-      .then(
-        () => router.push('/')
-      ).catch(
-        err => console.error(err.code) // todo handle for duplicate email error
-      )
+  if (!validations.every(Boolean)) {
+    return;
+  }
+
+  try {
+    const userId = (await createUserWithEmailAndPassword(getAuth(), formData.value.email, formData.value.password)).user.uid;
+    setUser(
+      userId,
+      {
+        email: formData.value.email,
+        firstName: formData.value.firstName,
+        lastName: formData.value.lastName,
+      },
+      [Roles.COACH]
+    );
+    router.push('/');
+  } catch(err) {
+    console.error(err.code); // todo handle for duplicate email error
   }
 }
 </script>
