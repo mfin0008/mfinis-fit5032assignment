@@ -1,3 +1,4 @@
+import { useCurrentUser } from '@/composables/useCurrentUser'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -62,3 +63,16 @@ const router = createRouter({
 })
 
 export default router
+
+router.beforeEach(async (to, from) => {
+  const { isLoggedIn } = useCurrentUser();
+  const SIGN_IN_ROUTES = ['login', 'sign-up', 'sign-up-coach', 'sign-up-player'];
+
+  if (isLoggedIn.value && SIGN_IN_ROUTES.includes(to.name) && from.name !== 'profile') {
+    return { name: 'profile' };
+  }
+
+  if (!isLoggedIn.value && to.name === 'profile') {
+    return { name: 'login' };
+  }
+})
