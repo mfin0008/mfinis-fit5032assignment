@@ -10,7 +10,6 @@ export const validateRequiredField = (nameValue, fieldName, fieldDesc, errors, b
   }
   if (!nameValue) {
     errors[fieldName] = getEmptyErrorMessage(fieldDesc);
-    console.log(errors);
     return false;
   }
   return true;

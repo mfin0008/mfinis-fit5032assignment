@@ -29,7 +29,7 @@ const handleSubmitClick = () => {
 
   signInWithEmailAndPassword(getAuth(), formData.value.email, formData.value.password)
     .then(
-      () => router.push('/')
+      () => router.push('/profile')
     ).catch(
       () => {
         errors.value.credentials = 'Invalid email address and/or password';

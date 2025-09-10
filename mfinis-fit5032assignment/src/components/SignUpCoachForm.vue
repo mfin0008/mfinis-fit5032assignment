@@ -60,7 +60,7 @@ const handleSubmitClick = async () => {
       },
       [Roles.COACH]
     );
-    router.push('/');
+    router.push('/login');
   } catch(err) {
     console.error(err.code); // todo handle for duplicate email error
   }

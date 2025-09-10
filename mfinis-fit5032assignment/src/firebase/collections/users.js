@@ -26,3 +26,10 @@ export async function isRole(userId, role) {
   const roles = (await getDoc(doc(db, roleColumn, userId))).data().roles;
   return role in roles;
 }
+
+export async function getUserDoc(userId) {
+  if (!userId) {
+    return null;
+  }
+  return (await getDoc(doc(db, userColumn, userId))).data();
+}

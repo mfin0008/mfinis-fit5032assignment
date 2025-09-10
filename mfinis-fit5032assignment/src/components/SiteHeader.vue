@@ -1,5 +1,8 @@
 <script setup>
-import { RouterLink } from 'vue-router'
+import { useCurrentUser } from '@/composables/useCurrentUser';
+import { RouterLink } from 'vue-router';
+
+const { user, isLoggedIn } = useCurrentUser();
 </script>
 
 <template>
@@ -23,7 +26,9 @@ import { RouterLink } from 'vue-router'
 
         <div id="mainNav" class="collapse navbar-collapse">
           <ul class="navbar-nav ms-auto align-items-center gap-3">
-            <li class="nav-item"><RouterLink to="/login" class="nav-link">LOGIN</RouterLink></li>
+            <li v-if="user===undefined"></li>
+            <li class="nav-item" v-else-if="!isLoggedIn"><RouterLink to="/login" class="nav-link">LOGIN</RouterLink></li>
+            <li class="nav-item" v-else><RouterLink to="/profile" class="nav-link">PROFILE</RouterLink></li>
             <li class="nav-item"><RouterLink to="/team" class="nav-link">TEAM</RouterLink></li>
             <li class="nav-item"><RouterLink to="/fixture" class="nav-link">FIXTURE</RouterLink></li>
             <li class="nav-item"><RouterLink to="/standings" class="nav-link">STANDINGS</RouterLink></li>

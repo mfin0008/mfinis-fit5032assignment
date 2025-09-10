@@ -58,7 +58,6 @@ const submitForm = async (success) => {
         email: formData.value.email,
         firstName: formData.value.firstName,
         lastName: formData.value.lastName,
-        nickname: formData.value.nickname,
         playerData: {
           nickname: formData.value.nickname,
           position: formData.value.position,
@@ -74,7 +73,7 @@ const submitForm = async (success) => {
       },
       [Roles.PLAYER]
     );
-    await router.push('/');
+    await router.push('/login');
   } catch (err) {
     console.error(err.code);
   }
