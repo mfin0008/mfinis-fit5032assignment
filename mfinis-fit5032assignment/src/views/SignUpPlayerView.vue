@@ -110,48 +110,50 @@ const resetForm = () => {
 
 <template>
   <div class="container">
-    <div class="row pt-3">
-      <div class="col-1 d-xxl-none"></div>
-      <div class="col-10 col-xxl-4 mb-3 content-box">
-        <div class="flex-column d-flex h-100 w-100">
-          <h2 class="mt-3">Create your account</h2>
-          <SignUpPlayerForm
-            @resetForm="resetForm"
-            @submitForm="(success) => submitForm(success)"
-            v-model:form-data="formData"
-            v-model:errors="errors"
-          />
+    <div class="row justify-content-center pt-3">
+      <div class="col-12 col-xxl-10">
+        <div class="row g-4 align-items-stretch">
+
+          <div class="col-12 col-xxl-4 mx-auto">
+            <div class="content-box d-flex flex-column align-items-stretch h-100">
+              <h2 class="mt-3">Create your account</h2>
+              <SignUpPlayerForm
+                @resetForm="resetForm"
+                @submitForm="(success) => submitForm(success)"
+                v-model:form-data="formData"
+                v-model:errors="errors"
+              />
+            </div>
+          </div>
+
+          <div class="col-12 col-xxl-3 mx-auto">
+            <div class="content-box h-100 d-flex flex-column">
+              <PlayerStatSliderForm
+                :max-stat-total="MAX_STAT_TOTAL"
+                v-model:player-stats="playerStats"
+                v-model:is-at-stat-total="isAtStatTotal"
+              />
+            </div>
+          </div>
+
+          <div class="col-12 col-xxl-5 mx-auto">
+            <div class="content-box p-4 h-100 d-flex flex-column">
+              <h2 class="mt-0 mb-4">Your player card!</h2>
+              <PlayerCard
+                :stats="playerStats"
+                :firstName="formData.firstName"
+                :nickname="formData.nickname"
+                :lastName="formData.lastName"
+                :position="formData.position"
+              />
+              <div v-if="isAtStatTotal" class="error-text mt-3">
+                Total stat limit reached ({{ MAX_STAT_TOTAL }}).
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
-
-      <div class="col-1 col-xxl-1"></div>
-
-      <div class="col-1 d-xxl-none"></div>
-      <div class="col-10 col-xxl-2 content-box mb-3">
-        <PlayerStatSliderForm
-          :max-stat-total="MAX_STAT_TOTAL"
-          v-model:player-stats="playerStats"
-          v-model:is-at-stat-total="isAtStatTotal"
-        />
-      </div>
-      <div class="col-1 d-xxl-none"></div>
-
-      <div class="col-1 col-xxl-1"></div>
-
-      <div class="col-10 col-xxl-4 content-box mb-3">
-        <h2 class="mt-3">Your player card!</h2>
-        <PlayerCard
-          :stats="playerStats"
-          :firstName="formData.firstName"
-          :nickname="formData.nickname"
-          :lastName="formData.lastName"
-          :position="formData.position"
-        />
-        <div v-if="isAtStatTotal" class="error-text mb-3">
-          Total stat limit reached ({{ MAX_STAT_TOTAL }}).
-        </div>
-      </div>
-      <div class="col-1 d-xxl-none"></div>
     </div>
   </div>
 </template>

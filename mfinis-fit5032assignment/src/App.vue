@@ -6,15 +6,18 @@ import SiteFooter from './components/SiteFooter.vue';
 
 <template>
   <div class="page">
-    <header class="sticky-top vw-100"><SiteHeader /></header>
-    <main class="site-content vw-100">
+    <header class="sticky-top w-100"><SiteHeader /></header>
+    <main class="site-content w-100">
       <RouterView />
     </main>
-    <footer class="sticky-bottom vw-100"><SiteFooter /></footer>
+    <footer class="sticky-bottom w-100"><SiteFooter /></footer>
   </div>
 </template>
 
 <style scoped>
+.site-content {
+  min-height: 0;
+}
 .page {
   min-height: 100vh;
   display: grid;

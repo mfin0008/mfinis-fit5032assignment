@@ -20,6 +20,12 @@ html, body {
   text-align: center;
   align-items: center;
 }
+.raised-card {
+  background-color: var(--color-secondary);
+}
+.transparent {
+  opacity: 0.5;
+}
 
 label {
   font-size: large;
@@ -77,6 +83,6 @@ button {
   --bs-btn-active-bg: var(--color-secondary);
   --bs-btn-active-color: var(--color-neutral);
 }
-button:disabled {
+.btn:disabled {
   background-color: grey;
 }

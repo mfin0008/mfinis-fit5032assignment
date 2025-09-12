@@ -19,7 +19,6 @@ export async function setUser(userId, data, rolesArray) {
 
 async function setRole(userId, rolesArray) {
   await setDoc(doc(db, roleColumn, userId), {roles: rolesArray});
-  console.log(rolesArray);
 }
 
 export async function isRole(userId, role) {

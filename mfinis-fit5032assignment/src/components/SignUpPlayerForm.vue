@@ -113,10 +113,10 @@ const handleSubmitClick = () => {
     </select>
     <div class="error-text">{{ errorsModel.position }}</div>
     <div class="mt-autojustify-content-center gap-3 py-3">
-      <button type="submit" class="btn btn-primary rounded-pill">Sign Up</button>
       <button type="button" class="btn btn-secondary rounded-pill" @click="handleResetClick">
         Reset
       </button>
+      <button type="submit" class="btn btn-primary rounded-pill">Sign Up</button>
     </div>
   </form>
 </template>
