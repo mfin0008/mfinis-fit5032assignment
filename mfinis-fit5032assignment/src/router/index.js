@@ -37,7 +37,7 @@ const router = createRouter({
     {
       path: '/team',
       name: 'team',
-      component: () => import('../views/HomeView.vue'),
+      component: () => import('../views/TeamView.vue'),
     },
     {
       path: '/fixture',
@@ -67,12 +67,13 @@ export default router
 router.beforeEach(async (to, from) => {
   const { isLoggedIn } = useCurrentUser();
   const SIGN_IN_ROUTES = ['login', 'sign-up', 'sign-up-coach', 'sign-up-player'];
+  const AUTH_LOCKED_ROUTES = ['profile', 'team']
 
   if (isLoggedIn.value && SIGN_IN_ROUTES.includes(to.name) && from.name !== 'profile') {
     return { name: 'profile' };
   }
 
-  if (!isLoggedIn.value && to.name === 'profile') {
+  if (!isLoggedIn.value && AUTH_LOCKED_ROUTES.includes(to.name)) {
     return { name: 'login' };
   }
 })

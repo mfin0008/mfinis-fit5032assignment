@@ -4,7 +4,7 @@ import '../assets/main.css';
 import { validateEmail, validatePassword, validateConfirmPassword, validateFirstName, validateLastName } from '@/utils/validationHelpers';
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
 import { useRouter } from 'vue-router';
-import { Roles, setUser } from '@/firebase/collections/users';
+import { addCoachUser } from '@/firebase/collections/users';
 
 const formData = ref({
   email: '',
@@ -51,14 +51,13 @@ const handleSubmitClick = async () => {
 
   try {
     const userId = (await createUserWithEmailAndPassword(getAuth(), formData.value.email, formData.value.password)).user.uid;
-    setUser(
+    addCoachUser(
       userId,
       {
         email: formData.value.email,
         firstName: formData.value.firstName,
         lastName: formData.value.lastName,
-      },
-      [Roles.COACH]
+      }
     );
     router.push('/login');
   } catch(err) {

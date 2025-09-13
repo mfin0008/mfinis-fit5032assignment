@@ -2,8 +2,8 @@ import { doc, getDoc, collection, getDocs, addDoc, serverTimestamp, orderBy, que
 import db from '../init';
 import { hasRequiredFields, OrderDirection } from '../utils';
 
-const venueColumn = 'venues';
-const reviewsColumn = 'reviews';
+const venueCollection = 'venues';
+const reviewsCollection = 'reviews';
 
 export const ReviewsOrderByColumns = Object.freeze({
   RATING: 'rating'
@@ -15,25 +15,25 @@ export async function createVenue(data) {
     throw new Error(errorMsg);
   }
 
-  return await addDoc(collection(db, venueColumn), {
+  return await addDoc(collection(db, venueCollection), {
     ...data,
     createdAt: serverTimestamp(),
   });
 }
 
 export async function getVenue(venueId) {
-  const venue = await getDoc(doc(db, venueColumn, venueId));
+  const venue = await getDoc(doc(db, venueCollection, venueId));
   if (!venue.exists) throw new Error(`Venue ${venueId} not found.`);
   return venue.data();
 }
 
 export async function getAllVenues() {
-  const venuesSnapshot = await getDocs(collection(db, venueColumn));
+  const venuesSnapshot = await getDocs(collection(db, venueCollection));
   return venuesSnapshot.docs.map(doc => ({id: doc.id, data: doc.data()}));
 }
 
 export async function getVenueReviews(venueId, orderByColumn=ReviewsOrderByColumns.RATING, orderDirection=OrderDirection.DESC) {
-  const reviewQuery = query(collection(db, venueColumn, venueId, reviewsColumn), orderBy(orderByColumn, orderDirection));
+  const reviewQuery = query(collection(db, venueCollection, venueId, reviewsCollection), orderBy(orderByColumn, orderDirection));
   const venueSnapshop = await getDocs(reviewQuery);
   return venueSnapshop.docs.map(doc => ({id: doc.id, data: doc.data()}));
 }
@@ -43,9 +43,9 @@ export async function addReview(venueId, rating, content) {
   if (typeof(rating) !== 'number' || rating < 1 || rating > 5) throw new Error('Rating must be between 1..5');
   await getVenue(venueId); // check that the venue exists
 
-  const venueRef = doc(db, venueColumn, venueId);
+  const venueRef = doc(db, venueCollection, venueId);
 
-  await addDoc(collection(venueRef, reviewsColumn), {
+  await addDoc(collection(venueRef, reviewsCollection), {
     rating,
     content,
     createdAt: serverTimestamp(),

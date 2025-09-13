@@ -57,7 +57,7 @@ md-slider.at-stat-total {
 }
 
 .slider-pair {
-  margin-top: 2.5rem;
-  margin-bottom: 2.25rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 </style>

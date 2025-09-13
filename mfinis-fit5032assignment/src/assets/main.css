@@ -20,8 +20,16 @@ html, body {
   text-align: center;
   align-items: center;
 }
+.content-box > * {
+  width: 90%;
+  margin-inline: auto;
+}
+
 .raised-card {
   background-color: var(--color-secondary);
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 1rem;
 }
 .transparent {
   opacity: 0.5;

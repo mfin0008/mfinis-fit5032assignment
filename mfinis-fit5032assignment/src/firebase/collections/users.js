@@ -1,8 +1,8 @@
 import { setDoc, doc, getDoc } from 'firebase/firestore';
 import db from '../init';
+import { hasRequiredFields } from '../utils';
 
-const userColumn = 'users';
-const roleColumn = 'roles';
+export const userCollection = 'users';
 
 export const Roles = Object.freeze({
   PLAYER: 'player',
@@ -10,25 +10,38 @@ export const Roles = Object.freeze({
   ADMIN: 'admin',
 })
 
-export async function setUser(userId, data, rolesArray) {
-  const userDoc = await setDoc(doc(db, userColumn, userId), data);
-  await setRole(userId, rolesArray);
-
-  return userDoc;
+export async function addCoachUser(userId, data) {
+  await setUser(userId, data, ['email', 'firstName', 'lastName'], Roles.COACH);
 }
 
-async function setRole(userId, rolesArray) {
-  await setDoc(doc(db, roleColumn, userId), {roles: rolesArray});
+export async function addPlayerUser(userId, data) {
+  await setUser(
+    userId, 
+    data, 
+    ['email', 'firstName', 'lastName', 'position', 'kicking', 'handling', 'goalKicking', 'marking', 'pace', 'defending', 'strength', 'tackling'],
+    Roles.PLAYER,
+  );
+}
+
+async function setUser(userId, data, requiredFields, role) {
+  const { hasFields, errorMsg } = hasRequiredFields(data, requiredFields);
+  if (!hasFields) {
+    throw new Error(errorMsg);
+  }
+
+  data.role = role;
+  data.fullName = `${data.firstName} ${data.lastName}`;
+  await setDoc(doc(db, userCollection, userId), data);
 }
 
 export async function isRole(userId, role) {
-  const roles = (await getDoc(doc(db, roleColumn, userId))).data().roles;
-  return role in roles;
+  const userData = (await getDoc(doc(db, userCollection, userId))).data();
+  return role === userData?.role;
 }
 
-export async function getUserDoc(userId) {
+export async function getUser(userId) {
   if (!userId) {
     return null;
   }
-  return (await getDoc(doc(db, userColumn, userId))).data();
+  return (await getDoc(doc(db, userCollection, userId))).data();
 }

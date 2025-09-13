@@ -1,6 +1,6 @@
 <script setup>
 import { useCurrentUser } from '@/composables/useCurrentUser';
-import { getUserDoc } from '@/firebase/collections/users';
+import { getUser } from '@/firebase/collections/users';
 import { getAuth, signOut } from 'firebase/auth';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -20,7 +20,7 @@ onMounted(async () => {
   }
 
   try {
-    userDoc.value = await getUserDoc(user.value.uid);
+    userDoc.value = await getUser(user.value.uid);
   } catch (err) {
     console.error(err);
     error.value = 'Failed to load profile';
