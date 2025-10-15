@@ -1,9 +1,9 @@
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue';
 import VenueReviewForm from './VenueReviewForm.vue';
-import { getVenueReviews, ReviewsOrderByColumns } from '@/firebase/collections/venues';
+import { getVenueReviews } from '@/firebase/collections/venues';
 import VenueReviewDisplayCard from './VenueReviewDisplayCard.vue';
-import { OrderDirection } from '@/firebase/utils';
+import { OrderDirection, ReviewsOrderByColumns } from '../../shared/constants';
 import { useCurrentUser } from '@/composables/useCurrentUser';
 import { useRouter } from 'vue-router';
 

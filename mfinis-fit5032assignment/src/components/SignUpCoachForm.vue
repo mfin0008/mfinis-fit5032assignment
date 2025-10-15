@@ -51,7 +51,7 @@ const handleSubmitClick = async () => {
 
   try {
     const userId = (await createUserWithEmailAndPassword(getAuth(), formData.value.email, formData.value.password)).user.uid;
-    addCoachUser(
+    await addCoachUser(
       userId,
       {
         email: formData.value.email,
@@ -61,6 +61,7 @@ const handleSubmitClick = async () => {
     );
     router.push('/login');
   } catch(err) {
+    alert('Oops! Something went wrong...');
     console.error(err.code); // todo handle for duplicate email error
   }
 }

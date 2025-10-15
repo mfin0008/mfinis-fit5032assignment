@@ -9,7 +9,7 @@ const auth = getAuth();
 const router = useRouter();
 const { user } = useCurrentUser();
 
-const userDoc = ref(null);
+const profileName = ref('');
 const loading = ref(true);
 const error = ref('');
 
@@ -20,7 +20,7 @@ onMounted(async () => {
   }
 
   try {
-    userDoc.value = await getUser(user.value.uid);
+    profileName.value = (await getUser(user.value.uid)).data.fullName;
   } catch (err) {
     console.error(err);
     error.value = 'Failed to load profile';
@@ -38,7 +38,7 @@ const handleSignOut = () => {
   <div class="container">
     <div class="row">
       <div class="col-6 mx-auto content-box d-flex flex-column py-3 gap-5">
-        <h2>Hello, {{ userDoc?.firstName }}</h2>
+        <h2>Hello, {{ profileName }}</h2>
         <button @click="handleSignOut" type="button" class="btn btn-primary rounded-pill">Sign out</button>
       </div>
     </div>

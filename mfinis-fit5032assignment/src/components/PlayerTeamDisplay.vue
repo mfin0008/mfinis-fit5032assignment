@@ -12,7 +12,7 @@ const selectedTeamName = ref('');
 const isMemberOfCurrentTeam = computed(() => players.value.map(player => player.id).includes(props.userId));
 const handleSelectTeam = async (teamId) => {
   selectedTeamId.value = teamId;
-  selectedTeamName.value = (await getTeam(teamId)).name;
+  selectedTeamName.value = (await getTeam(teamId))?.data?.teamName;
   await refresh();
 }
 
@@ -25,7 +25,7 @@ const players = ref([]);
 const handleAddRequest = async () => {
   await addRequestToJoinTeam(selectedTeamId.value, props.userId);
   await refresh();
-} 
+}
 
 const refresh = async () => {
   if (!selectedTeamId.value) return;
@@ -50,6 +50,7 @@ const refresh = async () => {
               :key="team.id"
               :team-id="team.id"
               :team-name="team.data.name"
+              :number-of-players="team.playerCount"
               @select-team="(teamId) => handleSelectTeam(teamId)"
             />
           </div>
@@ -65,8 +66,8 @@ const refresh = async () => {
           <div v-else-if="isMemberOfCurrentTeam">
             You are already a member of this team
           </div>
-          <button 
-            v-else-if="!hasPendingRequest" 
+          <button
+            v-else-if="!hasPendingRequest"
             class="btn btn-primary rounded-pill"
             @click="handleAddRequest"
           >
@@ -84,7 +85,7 @@ const refresh = async () => {
           <PlayerTableList :players="players"/>
         </div>
       </div>
-      
+
     </div>
   </div>
 </template>

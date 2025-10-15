@@ -34,7 +34,7 @@ watch(showCreateReviewForActiveVenue, refreshVenues);
           <div class="flex-grow-1 overflow-auto">
             <div class="vstack gap-3">
               <VenueDisplayCard v-for="venue in venues" :key="venue.id" @show-review="id => toggleShowReview(id)"
-                :id="venue.id" :name="venue.data.name" :address="venue.data.location?.address"
+                :id="venue.id" :name="venue.data?.name" :address="venue.data?.location?.address"
                 :isShowingReview="idOfActiveVenue === venue.id" :showCreateReview="showCreateReviewForActiveVenue" />
             </div>
           </div>

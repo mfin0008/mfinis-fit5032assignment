@@ -1,13 +1,6 @@
-import { doc, getDoc, collection, getDocs, addDoc, serverTimestamp, orderBy, query } from 'firebase/firestore';
-import db from '../init';
-import { hasRequiredFields, OrderDirection } from '../utils';
-
-const venueCollection = 'venues';
-const reviewsCollection = 'reviews';
-
-export const ReviewsOrderByColumns = Object.freeze({
-  RATING: 'rating'
-});
+import { hasRequiredFields } from '../utils';
+import { OrderDirection, ReviewsOrderByColumns } from '../../../shared/constants.js';
+import axios from 'axios';
 
 export async function createVenue(data) {
   const { hasFields, errorMsg } = hasRequiredFields(data, ['name', 'location']);
@@ -15,39 +8,51 @@ export async function createVenue(data) {
     throw new Error(errorMsg);
   }
 
-  return await addDoc(collection(db, venueCollection), {
-    ...data,
-    createdAt: serverTimestamp(),
+  await axios.post('/api/createVenue', {
+    name: data.name,
+    location: data.location,
   });
 }
 
 export async function getVenue(venueId) {
-  const venue = await getDoc(doc(db, venueCollection, venueId));
-  if (!venue.exists) throw new Error(`Venue ${venueId} not found.`);
-  return venue.data();
+  const { hasFields, errorMsg } = hasRequiredFields({venueId}, ['venueId']);
+  if (!hasFields) {
+    throw new Error(errorMsg);
+  }
+
+  const res = await axios.get('/api/getVenue', { params: { id: venueId } });
+  return res.data;
 }
 
 export async function getAllVenues() {
-  const venuesSnapshot = await getDocs(collection(db, venueCollection));
-  return venuesSnapshot.docs.map(doc => ({id: doc.id, data: doc.data()}));
+  const res = await axios.get('/api/getAllVenues');
+  return res.data.data;
 }
 
 export async function getVenueReviews(venueId, orderByColumn=ReviewsOrderByColumns.RATING, orderDirection=OrderDirection.DESC) {
-  const reviewQuery = query(collection(db, venueCollection, venueId, reviewsCollection), orderBy(orderByColumn, orderDirection));
-  const venueSnapshop = await getDocs(reviewQuery);
-  return venueSnapshop.docs.map(doc => ({id: doc.id, data: doc.data()}));
+  const { hasFields, errorMsg } = hasRequiredFields({venueId, orderByColumn, orderDirection}, ['venueId', 'orderByColumn', 'orderDirection']);
+  if (!hasFields) {
+    throw new Error(errorMsg);
+  }
+  if (!Object.values(ReviewsOrderByColumns).includes(orderByColumn)) {
+    throw new Error(`Invalid order by option: ${orderByColumn}`);
+  }
+  if (!Object.values(OrderDirection).includes(orderDirection)) {
+    throw new Error(`Invalid order by direction: ${orderDirection}`);
+  }
+
+  const res = await axios.get('/api/getVenueReviews', {
+    params: { venueId, orderByColumn, orderDirection }
+  });
+  return res.data.data;
 }
 
 export async function addReview(venueId, rating, content) {
-  if (!venueId) throw new Error('Must provide a venue ID.');
+  const { hasFields, errorMsg } = hasRequiredFields({venueId, rating, content}, ['venueId', 'rating', 'content']);
+  if (!hasFields) {
+    throw new Error(errorMsg);
+  }
   if (typeof(rating) !== 'number' || rating < 1 || rating > 5) throw new Error('Rating must be between 1..5');
-  await getVenue(venueId); // check that the venue exists
 
-  const venueRef = doc(db, venueCollection, venueId);
-
-  await addDoc(collection(venueRef, reviewsCollection), {
-    rating,
-    content,
-    createdAt: serverTimestamp(),
-  });
+  await axios.post('/api/addReview', { venueId, rating, content });
 }

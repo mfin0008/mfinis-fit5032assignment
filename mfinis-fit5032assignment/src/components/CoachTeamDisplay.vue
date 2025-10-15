@@ -49,7 +49,7 @@ const handleSelectTeam = async (teamId) => {
 <template>
   <div class="container">
     <div class="row gx-4">
-      
+
       <div class="col-12 col-xxl-3 my-3">
         <div class="content-box h-100">
           <h3 class="py-3">Your Teams</h3>
@@ -72,9 +72,10 @@ const handleSelectTeam = async (teamId) => {
           <div v-else>
             <TeamDisplayCard
               v-for="team of teams"
-              :key="team.name"
+              :key="team.data.teamName"
               :team-id="team.id"
-              :team-name="team.name"
+              :team-name="team.data.teamName"
+              :number-of-players="team.playerCount"
               @select-team="(teamId) => handleSelectTeam(teamId)"
             />
           </div>
@@ -87,12 +88,12 @@ const handleSelectTeam = async (teamId) => {
           <div v-if="!selectedTeamId">Select a team to view requests for.</div>
           <div v-else-if="!requests.length">You have no new requests to view for this team.</div>
           <div v-else>
-            <TeamRequestCard 
-              v-for="request of requests" 
+            <TeamRequestCard
+              v-for="request of requests"
               :key="request.requestId"
               :team-id="selectedTeamId"
               :coach-id="props.userId"
-              :player-id="request.playerId"
+              :player-id="request.data.playerId"
               :request-id="request.id"
               @update-request="refresh()"
             />

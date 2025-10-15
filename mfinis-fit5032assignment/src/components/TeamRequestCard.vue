@@ -1,5 +1,6 @@
 <script setup>
-import { addPlayerToTeam, RequestStatus, updateJoinTeamRequest } from '@/firebase/collections/teams';
+import { addPlayerToTeam, updateJoinTeamRequest } from '@/firebase/collections/teams';
+import { RequestStatus } from '../../shared/constants.js';
 import { getUser } from '@/firebase/collections/users';
 import { onMounted, ref } from 'vue';
 
@@ -14,17 +15,21 @@ const emits = defineEmits(['updateRequest']);
 
 const playerName = ref('');
 onMounted(async () => {
-  const player = await getUser(props.playerId);
-  playerName.value = `${player.firstName} ${player.lastName}`;
+  try {
+    playerName.value = (await getUser(props.playerId)).data.fullName;
+  } catch(error) {
+    alert('Oops! Something went wrong...');
+    console.error(error);
+  }
 })
 
-const acceptRequest = () => {
-  updateJoinTeamRequest(props.teamId, props.playerId, props.coachId, RequestStatus.ACCEPTED);
-  addPlayerToTeam(props.teamId, props.playerId);
+const acceptRequest = async () => {
+  await updateJoinTeamRequest(props.teamId, props.playerId, props.coachId, RequestStatus.ACCEPTED);
+  await addPlayerToTeam(props.teamId, props.playerId);
   emits('updateRequest');
 }
-const rejectRequest = () => {
-  updateJoinTeamRequest(props.teamId, props.playerId, props.coachId, RequestStatus.REJECTED);
+const rejectRequest = async () => {
+  await updateJoinTeamRequest(props.teamId, props.playerId, props.coachId, RequestStatus.REJECTED);
   emits('updateRequest');
 }
 </script>

@@ -13,7 +13,7 @@ onMounted(async () => (teams.value = await getAllTeams()));
 const filteredTeams = computed(() => {
   const term = search.value.trim().toLowerCase();
   if (!term) return [];
-  return teams.value.filter(team => (team.nameLower)?.includes(term));
+  return teams.value.filter(team => (team.data.nameLower)?.includes(term));
 })
 
 function handleSelect() {
@@ -42,7 +42,7 @@ function handleSelect() {
       @change="handleSelect"
     >
       <option v-for="team in filteredTeams" :key="team.id" :value="team.id">
-        {{ team.name }}
+        {{ team.data.teamName }}
       </option>
     </select>
 

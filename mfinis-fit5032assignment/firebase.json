@@ -1,0 +1,48 @@
+{
+  "firestore": {
+    "database": "(default)",
+    "location": "australia-southeast2",
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ],
+      "predeploy": [
+        "node scripts/sync-shared.js",
+        "npm --prefix \"$RESOURCE_DIR\" run lint"
+      ],
+      "hosting": {
+        "rewrites": [
+            { "source": "api/getUser", "function": "getUser" },
+            { "source": "api/userIsRole", "function": "userIsRole" },
+            { "source": "api/setUser", "function": "setUser" },
+            { "source": "api/createVenue", "function": "createVenue" },
+            { "source": "api/getVenue", "function": "getVenue" },
+            { "source": "api/getAllVenues", "function": "getAllVenues" },
+            { "source": "api/getVenueReviews", "function": "getVenueReviews" },
+            { "source": "api/addReview", "function": "addReview" },
+            { "source": "api/addTeam", "function": "addTeam" },
+            { "source": "api/addRequestToJoinTeam", "function": "addRequestToJoinTeam" },
+            { "source": "api/updateJoinTeamRequest", "function": "updateJoinTeamRequest" },    
+            { "source": "api/addPlayerToTeam", "function": "addPlayerToTeam" },
+            { "source": "api/removePlayerFromTeam", "function": "removePlayerFromTeam" },
+            { "source": "api/getPendingRequests", "function": "getPendingRequests" },
+            { "source": "api/getPlayersForTeam", "function": "getPlayersForTeam" },
+            { "source": "api/getTeamsForCoach", "function": "getTeamsForCoach" },
+            { "source": "api/getAllTeams", "function": "getAllTeams" },
+            { "source": "api/getTeam", "function": "getTeam" },
+            { "source": "api/getTeamsForPlayer", "function": "getTeamsForPlayer" }
+        ]
+      }   
+    }
+  ]
+}

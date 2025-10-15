@@ -52,7 +52,7 @@ const submitForm = async (success) => {
   }
   try {
     const userId = (await createUserWithEmailAndPassword(getAuth(), formData.value.email, formData.value.password)).user.uid;
-    addPlayerUser(
+    await addPlayerUser(
       userId,
       {
         email: formData.value.email,
@@ -72,6 +72,7 @@ const submitForm = async (success) => {
     );
     await router.push('/login');
   } catch (err) {
+    alert('Oops! Something went wrong...');
     console.error(err.code);
   }
 }
