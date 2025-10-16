@@ -4,7 +4,7 @@ import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { ref, onMounted, onUnmounted } from "vue";
 
-mapboxgl.accessToken = "pk.eyJ1IjoibWF0dGhld2ZpbmlzIiwiYSI6ImNtZ3NycGxpZTNjdHQybm92NHR2MjIwencifQ.X3Z2zFF2lcAKoyUS6D2mXQ";
+mapboxgl.accessToken = import.meta.env.VITE_mapboxgl;
 
 const mapContainer = ref(null);
 let map = null;
