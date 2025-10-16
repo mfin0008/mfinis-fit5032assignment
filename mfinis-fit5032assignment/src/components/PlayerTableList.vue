@@ -4,7 +4,7 @@ import Column from 'primevue/column';
 import { computed, ref } from 'vue';
 import { InputText } from 'primevue';
 
-const props = defineProps({players: Array});
+const props = defineProps({players: Array, teamName: String});
 const playerRows = computed(() => props.players.map(doc => doc.data));
 
 const columns = [
@@ -39,6 +39,7 @@ const filters = ref({
 <template>
   <div v-if="!props.players.length">Select a team to view players for.</div>
   <div v-else>
+    <h3 class="py-3">Players for {{ props.teamName }}</h3>
     <DataTable :value="playerRows" v-model:filters="filters" filterDisplay="row" tableStyle="min-width: 50rem" showGridlines stripedRows removableSort paginator :rows="10" class="mb-3">
       <Column v-for="col of columns" :key="col.field" :field="col.field" :header="col.header" sortable filter :showFilterMenu="false">
         <template #filter="{ filterModel, filterCallback }">

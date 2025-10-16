@@ -81,8 +81,7 @@ const refresh = async () => {
 
       <div class="col-12 my-3">
         <div class="content-box h-100">
-          <h3 class="py-3">Team Players</h3>
-          <PlayerTableList :players="players"/>
+          <PlayerTableList :players="players" :team-name="selectedTeamName"/>
         </div>
       </div>
 

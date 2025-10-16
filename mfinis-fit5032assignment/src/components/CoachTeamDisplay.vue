@@ -1,6 +1,6 @@
 <script setup>
 import TeamDisplayCard from '@/components/TeamDisplayCard.vue';
-import { addTeam, getPendingRequests, getPlayersForTeam, getTeamsForCoach } from '@/firebase/collections/teams';
+import { addTeam, getPendingRequests, getPlayersForTeam, getTeam, getTeamsForCoach } from '@/firebase/collections/teams';
 import { validateRequiredField } from '@/utils/validationHelpers';
 import { onMounted, ref } from 'vue';
 import TeamRequestCard from './TeamRequestCard.vue';
@@ -9,6 +9,7 @@ import PlayerTableList from './PlayerTableList.vue';
 const props = defineProps({userId: String});
 
 const selectedTeamId = ref('');
+const selectedTeamName = ref('');
 const requests = ref([]);
 const players = ref([]);
 
@@ -24,6 +25,7 @@ const refresh = async () => {
   teams.value = await getTeamsForCoach(props.userId);
 
   if (selectedTeamId.value) {
+    selectedTeamName.value = (await getTeam(selectedTeamId.value))?.data?.teamName;
     requests.value = await getPendingRequests(selectedTeamId.value);
     players.value = await getPlayersForTeam(selectedTeamId.value);
   }
@@ -103,8 +105,7 @@ const handleSelectTeam = async (teamId) => {
 
       <div class="col-12 my-3">
         <div class="content-box h-100">
-          <h3 class="py-3">Players</h3>
-          <PlayerTableList :players="players"/>
+          <PlayerTableList :players="players" :team-name="selectedTeamName"/>
         </div>
       </div>
 
