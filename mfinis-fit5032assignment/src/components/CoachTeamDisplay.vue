@@ -22,7 +22,7 @@ const validateTeamName = (blur) => {
 const teams = ref([]);
 const refresh = async () => {
   teams.value = await getTeamsForCoach(props.userId);
-  
+
   if (selectedTeamId.value) {
     requests.value = await getPendingRequests(selectedTeamId.value);
     players.value = await getPlayersForTeam(selectedTeamId.value);
@@ -50,7 +50,7 @@ const handleSelectTeam = async (teamId) => {
   <div class="container">
     <div class="row gx-4">
 
-      <div class="col-12 col-xxl-3 my-3">
+      <div class="col-12 col-xxl-6 my-3">
         <div class="content-box h-100">
           <h3 class="py-3">Your Teams</h3>
           <div class="raised-card py-3 mx-auto my-3" style="width: 90%">
@@ -82,7 +82,7 @@ const handleSelectTeam = async (teamId) => {
         </div>
       </div>
 
-      <div class="col-12 col-xxl-3 my-3">
+      <div class="col-12 col-xxl-6 my-3">
         <div class="content-box h-100">
           <h3 class="py-3">Team Requests</h3>
           <div v-if="!selectedTeamId">Select a team to view requests for.</div>
@@ -101,7 +101,7 @@ const handleSelectTeam = async (teamId) => {
         </div>
       </div>
 
-      <div class="col-12 col-xxl-6 my-3">
+      <div class="col-12 my-3">
         <div class="content-box h-100">
           <h3 class="py-3">Players</h3>
           <PlayerTableList :players="players"/>

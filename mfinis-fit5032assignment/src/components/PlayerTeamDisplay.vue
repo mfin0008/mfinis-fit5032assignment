@@ -39,7 +39,7 @@ const refresh = async () => {
   <div class="container">
     <div class="row gx-4">
 
-      <div class="col-12 col-xxl-3 my-3">
+      <div class="col-12 col-xxl-6 my-3">
         <div class="content-box h-100">
           <h3 class="py-3">Your Teams</h3>
           <TeamSearchBar @select-team="(teamId) => handleSelectTeam(teamId)"/>
@@ -57,7 +57,7 @@ const refresh = async () => {
         </div>
       </div>
 
-      <div class="col-12 col-xxl-3 my-3">
+      <div class="col-12 col-xxl-6 my-3">
         <div class="content-box h-100 py-3">
           <h3 class="py-3">Manage Requests</h3>
           <div v-if="!selectedTeamId">
@@ -79,7 +79,7 @@ const refresh = async () => {
         </div>
       </div>
 
-      <div class="col-12 col-xxl-6 my-3">
+      <div class="col-12 my-3">
         <div class="content-box h-100">
           <h3 class="py-3">Team Players</h3>
           <PlayerTableList :players="players"/>
