@@ -26,7 +26,7 @@ const averageRating = computed(() => {
   return Math.round(totalRating / reviews.value.length);
 });
 
-const refreshReviews = async () => reviews.value = await getVenueReviews(props.id, ReviewsOrderByColumns.RATING, sortType.value);
+const refreshReviews = async () => reviews.value = props.id ? await getVenueReviews(props.id, ReviewsOrderByColumns.RATING, sortType.value) : [];
 onMounted(async () => await refreshReviews());
 watch(() => props.id, refreshReviews);
 const hasReviews = computed(() => reviews.value.length > 0);

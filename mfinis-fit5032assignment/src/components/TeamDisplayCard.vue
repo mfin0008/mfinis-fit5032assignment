@@ -1,7 +1,6 @@
 <script setup>
 const props = defineProps({teamId: String, teamName: String, numberOfPlayers: Number});
 const emits = defineEmits(['selectTeam']);
-console.log(props)
 </script>
 
 <template>
