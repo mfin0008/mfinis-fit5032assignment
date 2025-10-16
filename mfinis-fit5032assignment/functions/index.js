@@ -15,6 +15,9 @@ const reviewCollection = 'reviews';
 const teamCollection = 'teams';
 const joinRequestCollection = 'joinRequests';
 const playerCollection = 'players';
+const fixtureCollection = 'fixtures';
+const scoreCollection = 'scores';
+const goalScorersCollection = 'goalScorers';
 
 if (!admin.apps.length) admin.initializeApp();
 const db = admin.firestore();
@@ -406,6 +409,36 @@ export const getTeamsForPlayer = makeHttpRequest(
 
     const teamsWithPlayerCounts = await addPlayerCountToTeamDocuments(teamDocs);
     return ok(res, teamsWithPlayerCounts);
+  }
+);
+
+// ---------------------------------------------------------------------------------------------------
+
+export const addFixture = makeHttpRequest(
+  'POST',
+  async (req, res) => {
+    const { weekNumber, homeTeamId, awayTeamId, matchTime } = req.body;
+    if (!weekNumber || !homeTeamId || !awayTeamId || !matchTime) return badInput(res);
+    if (homeTeamId === awayTeamId) return badInput(res);
+    const [homeTeamSnapshot, awayTeamSnapshot] = await Promise.all([
+      getGenericSnapshot(teamCollection, homeTeamId),
+      getGenericSnapshot(teamCollection, awayTeamId)
+    ]);
+    if (!homeTeamSnapshot.exists || !awayTeamSnapshot.exists) return badInput(res);
+
+    const fixtureRef = await db.collection(fixtureCollection).add({
+      weekNumber: Number(weekNumber),
+      homeTeamId,
+      awayTeamId,
+      matchTime: admin.firestore.Timestamp.fromDate(new Date(matchTime)),
+    });
+
+    await Promise.all([
+      fixtureRef.collection(scoreCollection).add({ [homeTeamId]: null, [awayTeamId]: null }),
+      fixtureRef.collection(goalScorersCollection).add({ [homeTeamId]: [], [awayTeamId]: [] }),
+    ]);
+
+    return ok(res, { id: fixtureRef.id });
   }
 );
 

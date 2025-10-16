@@ -40,7 +40,8 @@
             { "source": "api/getTeamsForCoach", "function": "getTeamsForCoach" },
             { "source": "api/getAllTeams", "function": "getAllTeams" },
             { "source": "api/getTeam", "function": "getTeam" },
-            { "source": "api/getTeamsForPlayer", "function": "getTeamsForPlayer" }
+            { "source": "api/getTeamsForPlayer", "function": "getTeamsForPlayer" },
+            { "source": "api/addFixture", "function": "addFixture" }
         ]
       }   
     }

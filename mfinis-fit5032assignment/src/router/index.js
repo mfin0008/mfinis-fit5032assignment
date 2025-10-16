@@ -42,7 +42,7 @@ const router = createRouter({
     {
       path: '/fixture',
       name: 'fixture',
-      component: () => import('../views/ProfileView.vue'),
+      component: () => import('../views/FixtureView.vue'),
     },
     {
       path: '/standings',
@@ -67,7 +67,7 @@ export default router
 router.beforeEach(async (to, from) => {
   const { isLoggedIn } = useCurrentUser();
   const SIGN_IN_ROUTES = ['login', 'sign-up', 'sign-up-coach', 'sign-up-player'];
-  const AUTH_LOCKED_ROUTES = ['profile', 'team']
+  const AUTH_LOCKED_ROUTES = ['profile', 'team', 'fixture'];
 
   if (isLoggedIn.value && SIGN_IN_ROUTES.includes(to.name) && from.name !== 'profile') {
     return { name: 'profile' };
