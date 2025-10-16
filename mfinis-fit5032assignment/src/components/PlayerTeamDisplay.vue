@@ -49,7 +49,7 @@ const refresh = async () => {
               v-for="team of teams"
               :key="team.id"
               :team-id="team.id"
-              :team-name="team.data.name"
+              :team-name="team.data.teamName"
               :number-of-players="team.playerCount"
               @select-team="(teamId) => handleSelectTeam(teamId)"
             />
