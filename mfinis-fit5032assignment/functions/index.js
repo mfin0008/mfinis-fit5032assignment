@@ -4,6 +4,7 @@ setGlobalOptions({ region: 'australia-southeast1', maxInstances: 10 });
 import { onRequest } from 'firebase-functions/v2/https';
 import admin from 'firebase-admin';
 import { FieldPath, Filter } from 'firebase-admin/firestore';
+import { Buffer } from 'node:buffer';
 
 import sgMail from '@sendgrid/mail';
 import { defineSecret } from 'firebase-functions/params';
@@ -513,10 +514,44 @@ export const getFixturesForTeam = makeHttpRequest(
 export const sendEmails = makeHttpRequest(
   'POST',
   async (req, res) => {
-    const { msg } = req.body;
+    const { recipientUserIds, subject, text, html, csvAttachment, fileName } = req.body;
+    if (!recipientUserIds || recipientUserIds.length < 1 || !subject) return badInput(res);
+    if (!text && !html) return badInput(res);
+    if (csvAttachment && !fileName) return badInput(res);
+
+    const recipientEmails = [];
+    const chunkedIds = splitArrayIntoBatchChunks(recipientUserIds);
+    for (const chunk of chunkedIds) {
+      const snapshot = await db.collection(userCollection)
+        .where(FieldPath.documentId(), 'in', chunk)
+        .get();
+
+      snapshot.forEach(doc => recipientEmails.push(doc.data().email));
+    }
+    if (recipientEmails.length === 0) {
+      return notFound(res)
+    }
+
+    const SENT_FROM_ADDRESS = 'matthew.finis@gmail.com';
+    const MESSAGE_BASE = { from: SENT_FROM_ADDRESS, subject, text, html };
+    if (csvAttachment) {
+      MESSAGE_BASE.attachments = [
+        {
+          content: Buffer.from(csvAttachment, 'utf-8').toString('base64'),
+          filename: fileName,
+          type: 'text/csv',
+          disposition: 'attachment',
+        }
+      ];
+    }
     sgMail.setApiKey(SENDGRID_API_KEY.value());
-    await sgMail.send(msg);
-    return ok(res);
+
+    for (const toEmail of recipientEmails) {
+      const msg = { to: toEmail, ...MESSAGE_BASE,  };
+      await sgMail.send(msg);
+    }
+
+    return ok(res, { sentCount: recipientEmails.length });
   },
   [SENDGRID_API_KEY]
 );

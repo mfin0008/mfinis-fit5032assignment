@@ -8,7 +8,7 @@ import PlayerTableList from './PlayerTableList.vue';
 import { useCurrentUser } from '@/composables/useCurrentUser';
 import { isRole } from '@/firebase/collections/users';
 import { Roles } from '../../shared/constants';
-import { createFixtureCsvForTeam } from '@/firebase/collections/fixtures';
+import { createFixtureCsvForTeam, sendTeamFixtureAsEmail } from '@/firebase/collections/fixtures';
 
 const props = defineProps({userId: String});
 
@@ -117,6 +117,7 @@ const handleSelectTeam = async (teamId) => {
         <div class="content-box h-100">
           <div v-if="selectedTeamId">
             <button class="mt-3 btn btn-primary rounded-pill" @click="createFixtureCsvForTeam(selectedTeamId)">Download Fixtures as .csv</button>
+            <button class="mt-3 btn btn-primary rounded-pill" @click="sendTeamFixtureAsEmail(selectedTeamId)">Bulk Email Fixtures as .csv</button>
           </div>
           <PlayerTableList :players="players" :team-name="selectedTeamName"/>
         </div>

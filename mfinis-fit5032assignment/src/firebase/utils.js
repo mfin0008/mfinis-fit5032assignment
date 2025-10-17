@@ -26,10 +26,10 @@ export const generateCsvFile = (headers, rowData) => {
 export const downloadCsvFile = (fileName, csvFile) => {
   const blob = new Blob(['\uFEFF', csvFile], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
-  
+
   const downloadLink = document.createElement('a');
   downloadLink.href = url;
-  downloadLink.download = `${fileName}.csv`;
+  downloadLink.download = fileName;
   document.body.appendChild(downloadLink);
   downloadLink.click();
 
