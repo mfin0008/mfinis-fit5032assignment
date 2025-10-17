@@ -4,6 +4,7 @@ import TeamSearchBar from './TeamSearchBar.vue';
 import { addRequestToJoinTeam, getTeamsForPlayer, getPendingRequests, getTeam, getPlayersForTeam } from '@/firebase/collections/teams';
 import PlayerTableList from './PlayerTableList.vue';
 import TeamDisplayCard from './TeamDisplayCard.vue';
+import { createFixtureCsvForTeam, sendIndividualFixtureAsEmail } from '@/firebase/collections/fixtures';
 
 const props = defineProps({userId: String});
 
@@ -81,7 +82,11 @@ const refresh = async () => {
 
       <div class="col-12 my-3">
         <div class="content-box h-100">
-          <PlayerTableList :players="players" :team-name="selectedTeamName"/>
+          <div v-if="selectedTeamId">
+            <button class="mt-3 btn btn-primary rounded-pill" @click="createFixtureCsvForTeam(selectedTeamId)">Download Fixtures as .csv</button>
+            <button class="mt-3 btn btn-primary rounded-pill" @click="sendIndividualFixtureAsEmail(props.userId, selectedTeamId)">Email Fixtures as .csv</button>
+            <PlayerTableList :players="players" :team-name="selectedTeamName"/>
+          </div>
         </div>
       </div>
 
