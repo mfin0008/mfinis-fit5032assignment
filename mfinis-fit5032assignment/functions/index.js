@@ -2,9 +2,12 @@ import { setGlobalOptions } from 'firebase-functions/v2';
 setGlobalOptions({ region: 'australia-southeast1', maxInstances: 10 });
 
 import { onRequest } from 'firebase-functions/v2/https';
-import cors from 'cors';
 import admin from 'firebase-admin';
 import { FieldPath } from 'firebase-admin/firestore';
+
+import sgMail from '@sendgrid/mail';
+import { defineSecret } from 'firebase-functions/params';
+const SENDGRID_API_KEY = defineSecret('SENDGRID_API_KEY');
 
 import { OrderDirection, ReviewsOrderByColumns, Roles, RequestStatus } from './shared/constants.js';
 import { splitArrayIntoBatchChunks } from './utils.js';
@@ -22,8 +25,6 @@ const goalScorersCollection = 'goalScorers';
 if (!admin.apps.length) admin.initializeApp();
 const db = admin.firestore();
 
-const corsHandler = cors({ origin: true });
-
 const isValidEnumValue = (value, enumRef) => Object.values(enumRef).includes(value);
 
 const getGenericSnapshot = async (collectionName, id) => await db.collection(collectionName).doc(id).get();
@@ -34,16 +35,21 @@ const ok = (res, data) => res.status(200).json({ data });
 const badInput = (res) => res.status(400).json({ error: { code: 400, message: 'Invalid request inputs' } });
 const notFound = (res) => res.status(404).json({ error: { code: 404, message: 'Not found' } });
 
-const makeHttpRequest = (methodType, handlerFunction) => onRequest((req, res) => {
-  corsHandler(req, res, async () => {
+const makeHttpRequest = (methodType, handlerFunction, secrets = []) => onRequest(
+  { 
+    secrets, 
+    invoker: 'public',
+    cors: ['*'],
+  }, 
+  async (req, res) => {
+    if (req.method !== methodType) return res.status(405).json({ error: { code: 405, message: 'Method is not allowed' } });
     try {
-      if (req.method !== methodType) return res.status(405).json({ error: { code: 405, message: 'Method is not allowed' } });
       await handlerFunction(req, res);
     } catch (error) {
       return res.status(500).json({ error: { code: 500, message: error?.message ?? 'Unknown server error' } });
     }
-  })
-});
+  }
+);
 
 const genericGetRequestHandler = (collectionName) => makeHttpRequest(
   'GET',
@@ -440,6 +446,19 @@ export const addFixture = makeHttpRequest(
 
     return ok(res, { id: fixtureRef.id });
   }
+);
+
+// ---------------------------------------------------------------------------------------------------
+
+export const sendEmails = makeHttpRequest(
+  'POST',
+  async (req, res) => {
+    const { msg } = req.body;
+    sgMail.setApiKey(SENDGRID_API_KEY.value());
+    await sgMail.send(msg);
+    return ok(res);
+  },
+  [SENDGRID_API_KEY]
 );
 
 // ---------------------------------------------------------------------------------------------------

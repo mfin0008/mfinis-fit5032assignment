@@ -16,3 +16,20 @@ export async function addFixture(weekNumber, homeTeamId, awayTeamId, matchTime) 
     matchTime
   });
 }
+
+export async function sendEmails() {
+  try {
+    await axios.post('/api/sendEmails', {
+      msg: {
+        to: 'matthew.finis@gmail.com',
+        from: 'matthew.finis@gmail.com',
+        subject: 'Test email',
+        text: 'Here is some more text',
+        html: '<strong> LOOK HERE </strong>'
+      }
+    });
+    console.log('sent')
+  } catch (error) {
+    console.log(error, error.message);
+  }
+}
