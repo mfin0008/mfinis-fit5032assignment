@@ -13,3 +13,26 @@ export const hasRequiredFields = (dataObject, fieldsArray) => {
       'Error - missing the following fields: ' + missingFields.join('\n')
   };
 }
+
+export const generateCsvFile = (headers, rowData) => {
+  const rows = [headers.join(',')];
+  for (const row of rowData) {
+    rows.push(row.join(','));
+  }
+  
+  return rows.join('\n');
+}
+
+export const downloadCsvFile = (fileName, csvFile) => {
+  const blob = new Blob(['\uFEFF', csvFile], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  
+  const downloadLink = document.createElement('a');
+  downloadLink.href = url;
+  downloadLink.download = `${fileName}.csv`;
+  document.body.appendChild(downloadLink);
+  downloadLink.click();
+
+  downloadLink.remove();
+  URL.revokeObjectURL(url);
+}

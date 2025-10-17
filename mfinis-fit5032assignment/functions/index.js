@@ -3,7 +3,7 @@ setGlobalOptions({ region: 'australia-southeast1', maxInstances: 10 });
 
 import { onRequest } from 'firebase-functions/v2/https';
 import admin from 'firebase-admin';
-import { FieldPath } from 'firebase-admin/firestore';
+import { FieldPath, Filter } from 'firebase-admin/firestore';
 
 import sgMail from '@sendgrid/mail';
 import { defineSecret } from 'firebase-functions/params';
@@ -445,6 +445,66 @@ export const addFixture = makeHttpRequest(
     ]);
 
     return ok(res, { id: fixtureRef.id });
+  }
+);
+
+// ---------------------------------------------------------------------------------------------------
+
+const getIdToTeamNameMapFromFixtureDocs = async (fixtureDocs) => {
+  const uniqueTeamIds = new Set();
+  for (const fixture of fixtureDocs) {
+    uniqueTeamIds.add(fixture.data.homeTeamId);
+    uniqueTeamIds.add(fixture.data.awayTeamId);
+  }
+  const teamIds = Array.from(uniqueTeamIds);
+
+  const idToTeamMap = new Map();
+  const chunkedTeamIds = splitArrayIntoBatchChunks(teamIds);
+  for (const chunk of chunkedTeamIds) {
+    const teamSnapshot = await db.collection(teamCollection)
+      .where(FieldPath.documentId(), 'in', chunk)
+      .get();
+
+    for (const teamDoc of teamSnapshot.docs) {
+      idToTeamMap.set(teamDoc.id, teamDoc.data().teamName);
+    }
+  }
+
+  return idToTeamMap;
+};
+
+export const getFixturesForTeam = makeHttpRequest(
+  'GET',
+  async (req, res) => {
+    const teamId = req.query.teamId;
+    if (!teamId) return badInput(res);
+
+    const teamSnapshot = await getGenericSnapshot(teamCollection, teamId);
+    if (!teamSnapshot.exists) return notFound(res);
+
+    const fixturesSnapshot = await db.collection(fixtureCollection)
+      .where(
+        Filter.or(
+          Filter.where('homeTeamId', '==', teamId),
+          Filter.where('awayTeamId', '==', teamId),
+        )
+      )
+      .orderBy('weekNumber', 'asc')
+      .get();
+      
+    if (fixturesSnapshot.empty) return ok(res, []);
+
+    const fixtureDocs = listDocuments(fixturesSnapshot);
+    const idToTeamMap = await getIdToTeamNameMapFromFixtureDocs(fixtureDocs);
+    const result = fixtureDocs.map(fixture => ({
+      id: fixture.id,
+      weekNumber: fixture.data.weekNumber,
+      homeTeam: idToTeamMap.get(fixture.data.homeTeamId),
+      awayTeam: idToTeamMap.get(fixture.data.awayTeamId),
+      matchTime: fixture.data.matchTime,
+    }));
+
+    return ok(res, result);
   }
 );
 

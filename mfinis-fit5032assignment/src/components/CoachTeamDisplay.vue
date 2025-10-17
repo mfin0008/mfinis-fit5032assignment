@@ -1,10 +1,14 @@
 <script setup>
 import TeamDisplayCard from '@/components/TeamDisplayCard.vue';
-import { addTeam, getPendingRequests, getPlayersForTeam, getTeam, getTeamsForCoach } from '@/firebase/collections/teams';
+import { addTeam, getAllTeams, getPendingRequests, getPlayersForTeam, getTeam, getTeamsForCoach } from '@/firebase/collections/teams';
 import { validateRequiredField } from '@/utils/validationHelpers';
 import { onMounted, ref } from 'vue';
 import TeamRequestCard from './TeamRequestCard.vue';
 import PlayerTableList from './PlayerTableList.vue';
+import { useCurrentUser } from '@/composables/useCurrentUser';
+import { isRole } from '@/firebase/collections/users';
+import { Roles } from '../../shared/constants';
+import { createFixtureCsvForTeam } from '@/firebase/collections/fixtures';
 
 const props = defineProps({userId: String});
 
@@ -22,7 +26,13 @@ const validateTeamName = (blur) => {
 
 const teams = ref([]);
 const refresh = async () => {
-  teams.value = await getTeamsForCoach(props.userId);
+  const { user } = useCurrentUser();
+  if (await isRole(user.value.uid, Roles.ADMIN)) {
+    teams.value = await getAllTeams();
+  }
+  else {
+    teams.value = await getTeamsForCoach(props.userId);
+  }
 
   if (selectedTeamId.value) {
     selectedTeamName.value = (await getTeam(selectedTeamId.value))?.data?.teamName;
@@ -105,6 +115,9 @@ const handleSelectTeam = async (teamId) => {
 
       <div class="col-12 my-3">
         <div class="content-box h-100">
+          <div v-if="selectedTeamId">
+            <button class="mt-3 btn btn-primary rounded-pill" @click="createFixtureCsvForTeam(selectedTeamId)">Download Fixtures as .csv</button>
+          </div>
           <PlayerTableList :players="players" :team-name="selectedTeamName"/>
         </div>
       </div>

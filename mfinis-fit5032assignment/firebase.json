@@ -42,7 +42,8 @@
             { "source": "api/getTeam", "function": "getTeam" },
             { "source": "api/getTeamsForPlayer", "function": "getTeamsForPlayer" },
             { "source": "api/addFixture", "function": "addFixture" },
-            { "source": "api/sendEmails", "function": "sendEmails" }
+            { "source": "api/sendEmails", "function": "sendEmails" },
+            { "source": "api/getFixturesForTeam", "function": "getFixturesForTeam" }
         ]
       }   
     }
