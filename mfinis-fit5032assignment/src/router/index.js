@@ -1,13 +1,15 @@
 import { useCurrentUser } from '@/composables/useCurrentUser'
+import { isRole } from '@/firebase/collections/users'
 import { createRouter, createWebHistory } from 'vue-router'
+import { Roles } from '../../shared/constants'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: () => import('../views/ProfileView.vue'),
+      name: 'admin-dashboard',
+      component: () => import('../views/AdminDashboard.vue'),
     },
     {
       path: '/login',
@@ -65,9 +67,10 @@ const router = createRouter({
 export default router
 
 router.beforeEach(async (to, from) => {
-  const { isLoggedIn } = useCurrentUser();
+  const { user, isLoggedIn } = useCurrentUser();
   const SIGN_IN_ROUTES = ['login', 'sign-up', 'sign-up-coach', 'sign-up-player'];
   const AUTH_LOCKED_ROUTES = ['profile', 'team', 'fixture'];
+  const ADMIN_ONLY_ROUTES = ['admin-dashboard'];
 
   if (isLoggedIn.value && SIGN_IN_ROUTES.includes(to.name) && from.name !== 'profile') {
     return { name: 'profile' };
@@ -75,5 +78,9 @@ router.beforeEach(async (to, from) => {
 
   if (!isLoggedIn.value && AUTH_LOCKED_ROUTES.includes(to.name)) {
     return { name: 'login' };
+  }
+
+  if (ADMIN_ONLY_ROUTES.includes(to.name) && !(await isRole(user.value.uid, Roles.ADMIN))) {
+    return { name: 'profile' };
   }
 })
